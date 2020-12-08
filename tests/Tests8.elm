@@ -1,11 +1,17 @@
 module Tests8 exposing (..)
 
-import Day7
+import Day8
     exposing
-        ( parseRulesString
-        , part1Calc
+        ( Step(..)
+        , calcPart1
+        , calcPart2
+        , findPossibleMutations
+        , parseInstructions
+        , prepareInput
         , testInput1
-        , testInput3
+        , testInput2
+        , walkThrough
+        , walkThroughWithChange
         )
 import Expect
 import Test exposing (..)
@@ -18,26 +24,95 @@ import Test exposing (..)
 all : Test
 all =
     describe "A Test Suite"
-        [ test "Day7 format input" <|
+        [ test "Day8 format input" <|
             \_ ->
-                Expect.equal formattedInput1 (parseRulesString testInput1)
-        , test "Day7 part1 input1" <|
+                Expect.equal formattedInput1 (parseInstructions testInput1)
+        , test "Day8 prepare input" <|
             \_ ->
-                Expect.equal 4 (part1Calc testInput1)
-        , test "Day7 part1 input3" <|
+                Expect.equal preparedInput1 (prepareInput (parseInstructions testInput1))
+        , test "Day8 part1 input1 calc correctly" <|
             \_ ->
-                Expect.equal 229 (part1Calc testInput3)
+                Expect.equal 5 (calcPart1 testInput1)
+        , test "Day8 part1 input2 calc correctly" <|
+            \_ ->
+                Expect.equal 2058 (calcPart1 testInput2)
+        , test "Day8 part2 mutates correctly" <|
+            \_ ->
+                Expect.equal mutations1 (findPossibleMutations preparedInput1)
+        , test "Day8 part2 input1 calc correctly" <|
+            \_ ->
+                Expect.equal 8 (calcPart2 testInput1)
+        , test "Day8 part2 input2 calc correctly" <|
+            \_ ->
+                Expect.equal 1000 (calcPart2 testInput2)
         ]
 
 
 formattedInput1 =
-    [ ( "light red", [ ( 1, "bright white" ), ( 2, "muted yellow" ) ] )
-    , ( "dark orange", [ ( 3, "bright white" ), ( 4, "muted yellow" ) ] )
-    , ( "bright white", [ ( 1, "shiny gold" ) ] )
-    , ( "muted yellow", [ ( 2, "shiny gold" ), ( 9, "faded blue" ) ] )
-    , ( "shiny gold", [ ( 1, "dark olive" ), ( 2, "vibrant plum" ) ] )
-    , ( "dark olive", [ ( 3, "faded blue" ), ( 4, "dotted black" ) ] )
-    , ( "vibrant plum", [ ( 5, "faded blue" ), ( 6, "dotted black" ) ] )
-    , ( "faded blue", [ ( 0, "o other" ) ] )
-    , ( "dotted black", [ ( 0, "o other" ) ] )
+    [ ( Nop, 0 )
+    , ( Acc, 1 )
+    , ( Jmp, 4 )
+    , ( Acc, 3 )
+    , ( Jmp, -3 )
+    , ( Acc, -99 )
+    , ( Acc, 1 )
+    , ( Jmp, -4 )
+    , ( Acc, 6 )
+    ]
+
+
+preparedInput1 =
+    [ ( Nop, 0, -1 )
+    , ( Acc, 1, -1 )
+    , ( Jmp, 4, -1 )
+    , ( Acc, 3, -1 )
+    , ( Jmp, -3, -1 )
+    , ( Acc, -99, -1 )
+    , ( Acc, 1, -1 )
+    , ( Jmp, -4, -1 )
+    , ( Acc, 6, -1 )
+    ]
+
+
+mutations1 =
+    [ [ ( Jmp, 0, -1 )
+      , ( Acc, 1, -1 )
+      , ( Jmp, 4, -1 )
+      , ( Acc, 3, -1 )
+      , ( Jmp, -3, -1 )
+      , ( Acc, -99, -1 )
+      , ( Acc, 1, -1 )
+      , ( Jmp, -4, -1 )
+      , ( Acc, 6, -1 )
+      ]
+    , [ ( Nop, 0, -1 )
+      , ( Acc, 1, -1 )
+      , ( Nop, 4, -1 )
+      , ( Acc, 3, -1 )
+      , ( Jmp, -3, -1 )
+      , ( Acc, -99, -1 )
+      , ( Acc, 1, -1 )
+      , ( Jmp, -4, -1 )
+      , ( Acc, 6, -1 )
+      ]
+    , [ ( Nop, 0, -1 )
+      , ( Acc, 1, -1 )
+      , ( Jmp, 4, -1 )
+      , ( Acc, 3, -1 )
+      , ( Nop, -3, -1 )
+      , ( Acc, -99, -1 )
+      , ( Acc, 1, -1 )
+      , ( Jmp, -4, -1 )
+      , ( Acc, 6, -1 )
+      ]
+    , [ ( Nop, 0, -1 )
+      , ( Acc, 1, -1 )
+      , ( Jmp, 4, -1 )
+      , ( Acc, 3, -1 )
+      , ( Jmp, -3, -1 )
+      , ( Acc, -99, -1 )
+      , ( Acc, 1, -1 )
+      , ( Nop, -4, -1 )
+      , ( Acc, 6, -1 )
+      ]
     ]
