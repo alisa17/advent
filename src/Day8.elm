@@ -11,8 +11,6 @@ module Day8 exposing
     , walkThroughWithChange
     )
 
-import Html exposing (a)
-
 
 parseInstructions : String -> List ( Step, Int )
 parseInstructions i =
