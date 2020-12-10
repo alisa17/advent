@@ -40,13 +40,13 @@ all =
                 Expect.equal 20874512 (findOffendingNumber 25 (parseInput testInput2))
         , test "Day9 sumUntilFindNumber testInput1" <|
             \_ ->
-                Expect.equal (Just [ 15, 25, 47, 40 ]) (sumUntilFindNumber 127 [ 15, 25, 47, 40, 62, 55 ])
+                Expect.equal [ 15, 25, 47, 40 ] (sumUntilFindNumber 127 [ 15, 25, 47, 40, 62, 55 ])
         , test "Day9 findContiguousSet testInput1" <|
             \_ ->
                 Expect.equal [ 15, 25, 47, 40 ] (findContiguousSet 127 formattedInput1)
         , test "Day9 calcPart2 testInput2" <|
             \_ ->
-                Expect.equal 0 (calcPart2 testInput2)
+                Expect.equal 3012420 (calcPart2 testInput2)
         ]
 
 

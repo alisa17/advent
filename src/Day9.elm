@@ -41,26 +41,28 @@ findContiguousSet int ls =
 
         h :: rest ->
             case sumUntilFindNumber int (h :: rest) of
-                Nothing ->
+                [] ->
                     findContiguousSet int rest
 
-                Just identifiedSet ->
+                identifiedSet ->
                     identifiedSet
 
 
-sumUntilFindNumber : Int -> List Int -> Maybe (List Int)
-sumUntilFindNumber a ls =
-    ls
-        |> List.indexedMap
-            (\i l ->
-                List.take (i + 1) ls
-                    |> (\x ->
-                            ( x, List.foldl (+) 0 x )
-                       )
-            )
-        |> List.filter (\( x, y ) -> y == a)
-        |> List.map Tuple.first
-        |> List.head
+sumUntilFindNumber : Int -> List Int -> List Int
+sumUntilFindNumber sumLookingFor listChecking =
+    case listChecking of
+        [] ->
+            []
+
+        [ a ] ->
+            []
+
+        l ->
+            if List.foldl (+) 0 l == sumLookingFor then
+                l
+
+            else
+                sumUntilFindNumber sumLookingFor (List.reverse l |> List.tail |> Maybe.withDefault [] |> List.reverse)
 
 
 findOffendingNumber : Int -> List Int -> Int
