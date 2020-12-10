@@ -3,10 +3,8 @@ module Tests9 exposing (..)
 import Day9
     exposing
         ( calcPart2
-        , findAllPossiblePairs
         , findContiguousSet
         , findOffendingNumber
-        , findPreviousNumbers
         , parseInput
         , sumUntilFindNumber
         , testInput1
@@ -26,12 +24,6 @@ all =
         [ test "Day9 format input" <|
             \_ ->
                 Expect.equal formattedInput1 (parseInput testInput1)
-        , test "Day9 find previous numbers" <|
-            \_ ->
-                Expect.equal [ 3, 4, 5, 6, 7 ] (findPreviousNumbers 5 7 [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ])
-        , test "Day9 find possible pairs" <|
-            \_ ->
-                Expect.equal [ ( 1, 2 ), ( 1, 3 ), ( 1, 4 ), ( 2, 3 ), ( 2, 4 ), ( 3, 4 ) ] (findAllPossiblePairs [] [ 1, 2, 3, 4 ])
         , test "Day9 find offending number testInput1" <|
             \_ ->
                 Expect.equal 127 (findOffendingNumber 5 formattedInput1)

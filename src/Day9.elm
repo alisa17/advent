@@ -1,9 +1,7 @@
 module Day9 exposing
     ( calcPart2
-    , findAllPossiblePairs
     , findContiguousSet
     , findOffendingNumber
-    , findPreviousNumbers
     , parseInput
     , sumUntilFindNumber
     , testInput1
@@ -16,10 +14,7 @@ parseInput =
     String.split "\n" >> List.map (String.toInt >> Maybe.withDefault -999999)
 
 
-
---calcPart2 : String -> Int
-
-
+calcPart2 : String -> Int
 calcPart2 str =
     parseInput str
         |> (\x -> findContiguousSet (findOffendingNumber 25 x) x)
@@ -62,57 +57,57 @@ sumUntilFindNumber sumLookingFor listChecking =
                 l
 
             else
-                sumUntilFindNumber sumLookingFor (List.reverse l |> List.tail |> Maybe.withDefault [] |> List.reverse)
+                sumUntilFindNumber sumLookingFor
+                    (List.reverse l
+                        |> List.tail
+                        |> Maybe.withDefault []
+                        |> List.reverse
+                    )
 
 
 findOffendingNumber : Int -> List Int -> Int
 findOffendingNumber preambleSize ls =
-    ls
-        |> List.indexedMap
-            (\i x ->
-                if i < preambleSize then
-                    ( x, True )
+    let
+        preamble =
+            List.take preambleSize ls
 
-                else
-                    let
-                        previousNumbers =
-                            findPreviousNumbers preambleSize i ls
-
-                        allPossiblePairs =
-                            findAllPossiblePairs [] previousNumbers
-
-                        isNumberLegal =
-                            List.filter (\( a, b ) -> (a + b) == x) allPossiblePairs
-                                |> List.length
-                                |> (\len -> len >= 1)
-                    in
-                    ( x, isNumberLegal )
-            )
-        |> List.filter (\( a, b ) -> not b)
-        |> List.map Tuple.first
-        |> List.head
-        |> Maybe.withDefault -999999
-
-
-findAllPossiblePairs : List ( Int, Int ) -> List Int -> List ( Int, Int )
-findAllPossiblePairs pairs ints =
-    case ints of
+        nonPreamble =
+            List.drop preambleSize ls
+    in
+    case nonPreamble of
         [] ->
-            pairs
-
-        [ p ] ->
-            pairs
+            0
 
         h :: rest ->
-            findAllPossiblePairs (pairs ++ List.map (\x -> ( h, x )) rest) rest
+            let
+                isLegal =
+                    checkPreamble h preamble
+            in
+            if isLegal then
+                findOffendingNumber preambleSize (List.drop 1 ls)
+
+            else
+                h
 
 
-findPreviousNumbers : Int -> Int -> List Int -> List Int
-findPreviousNumbers preambleSize currentIndex ls =
-    ls
-        |> List.indexedMap (\i x -> ( i, x ))
-        |> List.filter (\( a, b ) -> (a < currentIndex) && (a > (currentIndex - preambleSize - 1)))
-        |> List.map Tuple.second
+checkPreamble : Int -> List Int -> Bool
+checkPreamble n pre =
+    case pre of
+        [] ->
+            False
+
+        [ p ] ->
+            False
+
+        [ a, b ] ->
+            (a + b) == n
+
+        h :: rest ->
+            if List.length (List.filter (\x -> (x + h) == n) rest) >= 1 then
+                True
+
+            else
+                checkPreamble n rest
 
 
 testInput1 =
